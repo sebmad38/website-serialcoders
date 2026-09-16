@@ -14,7 +14,7 @@ function harness({id='G-TEST123',stored=null,unavailable=false}={}) {
   const settings=element({});
   const banner={hidden:true,querySelectorAll:()=>buttons,querySelector:()=>buttons[0]};
   const window={SERIAL_CODERS_CONFIG:{googleAnalyticsId:id},addEventListener(){}};
-  const document={title:'Contact',cookie:'',activeElement:settings,getElementById:n=>n==='consent'?banner:settings,querySelectorAll:()=>links,createElement:()=>({}),head:{append:s=>appended.push(s)}};
+  const document={querySelector:()=>null,title:'Contact',cookie:'',activeElement:settings,getElementById:n=>n==='consent'?banner:settings,querySelectorAll:()=>links,createElement:()=>({}),head:{append:s=>appended.push(s)}};
   const localStorage={getItem(){if(unavailable)throw Error('storage disabled');return stored},setItem(k,v){if(unavailable)throw Error('storage disabled');stored=v}};
   vm.runInNewContext(source,{window,document,localStorage,location:{origin:'https://serialcoders.fr',pathname:'/contact/',hostname:'serialcoders.fr'},Date,encodeURIComponent});
   return {window,appended,banner,settings,buttons,links};

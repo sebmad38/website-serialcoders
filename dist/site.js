@@ -91,3 +91,13 @@
     command('event', link.dataset.event, { page_location: location.origin + location.pathname });
   }));
 })();
+
+// Measure wrapped navigation too, so anchor headings remain below the sticky header.
+(() => {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const updateHeaderHeight = () => document.documentElement.style.setProperty('--header-height', header.getBoundingClientRect().height + 'px');
+  updateHeaderHeight();
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateHeaderHeight).observe(header);
+  else window.addEventListener('resize', updateHeaderHeight);
+})();
