@@ -17,7 +17,7 @@ async function get(path) {
 }
 let failures = 0;
 const fontFiles = (await readdir('dist/fonts')).map(file => `/fonts/${file}`);
-for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/editorial.css', '/modern.css', '/proposal-b.css', '/site.js', '/config.js', '/logo.png', '/pcsoft-partner.png', '/migration-architecture.png', '/migration-cobalt.png', ...fontFiles]) {
+for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/editorial.css', '/modern.css', '/proposal-b.css', '/site.js', '/config.js', '/logo.png', '/pcsoft-partner.png', '/migration-architecture.png', '/migration-gold-light.png', ...fontFiles]) {
   try {
     const response = await get(route);
     assert.equal(response.status, 200, `HTTP ${response.status}`);

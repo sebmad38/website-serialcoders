@@ -27,11 +27,11 @@ for (const initialPage of pages) {
   const page = enrichExistingService(initialPage);
   page.body = page.body.replace(/(<figure class="architecture-figure hero-visual">[^]*?)loading="lazy"/, '$1loading="eager" fetchpriority="high"');
   if (design === 'editorial') {
-    page.body = page.body.replaceAll('/migration-architecture.png', '/migration-cobalt.png');
+    page.body = page.body.replaceAll('/migration-architecture.png', '/migration-gold-light.png');
     if (page.path === '/migration-applications-pcsoft/') {
       // Move the illustration to a wide introductory band instead of repeating it.
       page.body = page.body.replace(/<figure class="architecture-figure[^]*?<\/figure>/, '');
-      page.body = page.body.replace('</section>', '<figure class="proposal-panorama"><img src="/migration-cobalt.png" width="1536" height="1024" alt="Illustration conceptuelle de structures blanches reliées par des passerelles bleu cobalt." decoding="async"></figure></section>');
+      page.body = page.body.replace('</section>', '<figure class="proposal-panorama"><img src="/migration-gold-light.png" width="1536" height="1024" alt="Illustration conceptuelle de structures blanches reliées par des passerelles dorées." decoding="async"></figure></section>');
     }
   }
   const url = new URL(page.path, origin).href;
@@ -44,5 +44,5 @@ for (const initialPage of pages) {
 await writeFile('dist/config.js', `window.SERIAL_CODERS_CONFIG = ${JSON.stringify({googleAnalyticsId:config.googleAnalyticsId})};\n`);
 await writeFile('dist/robots.txt', config.production ? `User-agent: *\nAllow: /\nSitemap: ${origin.origin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n');
 await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(p=>`<url><loc>${escape(new URL(p.path,origin).href)}</loc></url>`).join('')}</urlset>`);
-await writeFile('dist/404.html', '<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page introuvable | Serial Coders</title><meta name="robots" content="noindex"><link rel="stylesheet" href="/style.css"><main class="detail-hero"><h1>Cette page<br>n’existe pas.</h1><a class="button" href="/">Revenir à l’accueil</a></main></html>');
+await writeFile('dist/404.html', `<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page introuvable | Serial Coders</title><meta name="robots" content="noindex"><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="${themeStylesheet}"><main class="detail-hero"><h1>Cette page<br>n’existe pas.</h1><a class="button" href="/">Revenir à l’accueil</a></main></html>`);
 console.log(`${pages.length} pages générées — ${config.production ? 'production indexable' : 'préproduction non indexable'}.`);

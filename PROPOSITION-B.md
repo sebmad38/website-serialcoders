@@ -1,6 +1,6 @@
-# Proposition B — studio d’ingénierie éditorial
+# Proposition B — studio d’ingénierie éditorial, noir et or
 
-Direction : fond clair, cobalt, composition ouverte, titres sans sérif associés à un accent en italique. Offres présentées en lignes, méthode en étapes ouvertes, grandes bandes visuelles. Le logo et le badge de partenariat sont conservés.
+Direction actuelle : fond blanc, textes noirs, accents dorés, composition ouverte, titres sans sérif associés à un accent en italique. Offres présentées en lignes, méthode en étapes ouvertes, grandes bandes visuelles. Le logo et le badge de partenariat sont conservés. Aucun fond de section noir ; les teintes sombres servent aux textes. L’or des petits textes est assombri pour la lisibilité ; les boutons utilisent un doré lumineux avec texte noir.
 
 Activation : `design: "editorial"` dans `site.config.json`, puis génération. La variante sombre reste disponible avec `design: "modern"` ; son CSS et son image ne sont pas écrasés.
 
