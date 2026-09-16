@@ -80,7 +80,7 @@ export const homePage = {
   ].map(([name, text], i) => `<article><span class="sector-index" aria-hidden="true">0${i+1}</span><h3>${name}</h3><p>${text}</p></article>`).join('')}</div></section>
   <section class="section process" id="methode"><span class="eyebrow">07 / MÉTHODE</span><h2>Une trajectoire lisible.<br>Des décisions à chaque étape.</h2>${steps()}</section>
   <section class="section home-faq"><div><span class="eyebrow">AVANT DE VOUS LANCER</span><h2>Les questions<br>qui comptent.</h2>${migrationAction}</div>${faq([migrationFaq[0], migrationFaq[3], migrationFaq[4]])}</section>
-  <section class="contact-band" id="contact"><span class="eyebrow">PARLONS DE VOTRE PROCHAINE ÉTAPE</span><h2>Un nouveau projet ?<br><em>Faisons évoluer<br>votre métier.</em></h2><p>Création ou migration : présentez-nous votre application, vos enjeux et vos ambitions. Définissons ensemble votre prochaine étape.</p>${action('Échangeons sur votre besoin')}</section>`
+  <section class="contact-band" id="contact"><span class="eyebrow">PARLONS DE VOTRE PROCHAINE ÉTAPE</span><h2>Un nouveau projet ?<br><em>Faisons évoluer<br>votre métier.</em></h2><p>Création, ajout de nouveaux modules ou migration : présentez-nous votre application, vos enjeux et vos ambitions. Définissons ensemble votre prochaine étape.</p>${action('Échangeons sur votre besoin')}</section>`
 };
 
 export const migrationPage = {
