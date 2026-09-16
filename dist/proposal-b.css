@@ -194,3 +194,15 @@ header nav a:hover,header nav a:focus-visible{background:transparent}
 .nav-number{background:transparent;border-radius:0;min-width:auto;height:auto;font-size:.62rem;color:var(--accent);margin-right:.1rem}
 @media(max-width:1000px) and (min-width:761px){header{gap:0 1rem}.brand:after{font-size:1.45rem}.brand-baseline{padding-left:.8rem}.brand-baseline span{font-size:.9rem}.brand-baseline strong{font-size:1.4rem}header nav a{font-size:.7rem;padding:.65rem .2rem}}
 @media(max-width:760px){header{grid-template-columns:1fr auto;gap:0 1rem}.brand{padding:.65rem 0;gap:.6rem}.brand img{width:43px;height:43px}.brand:after{font-size:1.2rem}.brand-baseline{grid-row:2;grid-column:1/-1;justify-self:start;display:flex;align-items:baseline;gap:.3rem;margin:0 0 .65rem;padding-left:.65rem}.brand-baseline span{font-size:.85rem}.brand-baseline strong{font-size:1.1rem}header>.nav-contact{font-size:.66rem;padding:.6rem .5rem}header nav{grid-template-columns:repeat(2,minmax(0,1fr));padding-top:.3rem;padding-bottom:.3rem;gap:0 .6rem}header nav a{padding:.35rem 0;font-size:.73rem}}
+
+/* Recompose the existing logo as a readable horizontal signature. */
+header .brand{gap:.85rem;text-decoration:none;padding:.95rem 0}
+header .brand:after{content:none}
+.brand-symbol{display:block;width:54px;height:54px;overflow:hidden;flex-shrink:0}
+header .brand-symbol img{display:block;width:54px;height:auto;max-width:none;padding:0;border-radius:0;background:transparent;object-fit:initial}
+.brand-wordmark{display:flex;flex-direction:column;gap:.3rem}
+.brand-name{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:400;line-height:1;letter-spacing:-.065em;color:var(--ink);white-space:nowrap}
+.brand-name>span{font-weight:700;margin-left:.16em}.brand-name i{font-style:normal;color:#c99d29;margin-left:.04em}
+.brand-descriptor{font-size:.55rem;font-weight:700;letter-spacing:.19em;color:var(--muted);line-height:1.4}
+@media(max-width:1000px) and (min-width:761px){.brand-name{font-size:1.5rem}.brand-symbol,header .brand-symbol img{width:48px}.brand-symbol{height:48px}}
+@media(max-width:760px){header .brand{gap:.55rem;padding:.75rem 0}.brand-symbol,header .brand-symbol img{width:38px}.brand-symbol{height:38px}.brand-name{font-size:1.23rem}.brand-descriptor{font-size:.43rem;letter-spacing:.1em}.brand-wordmark{gap:.2rem}}
