@@ -5,6 +5,7 @@ import {readFile, readdir, access} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
 const source = await readFile('dist/site.js','utf8');
+const config = JSON.parse(await readFile('site.config.json', 'utf8'));
 function harness({id='G-TEST123',stored=null,unavailable=false}={}) {
   const appended=[];
   const element = dataset => ({dataset,hidden:true,events:{},addEventListener(n,f){this.events[n]=f;},focus(){}});
@@ -52,11 +53,26 @@ test('All pages have unique SEO metadata and resolvable internal links',async()=
     assert.equal((html.match(/<h1[ >]/g)||[]).length,1,file);
     const title=html.match(/<title>(.*?)<\/title>/)[1];assert.ok(!titles.has(title));titles.add(title);
     assert.match(html,/<meta name="description" content="[^"]+"/);
-    assert.match(html,/<meta name="robots" content="noindex, nofollow"/);
+    assert.ok(html.includes(`<meta name="robots" content="${config.production ? 'index, follow' : 'noindex, nofollow'}">`));
     assert.ok(!html.includes('href="#"'));
     for(const match of html.matchAll(/(?:href|src)="(\/[^"#]*)(?:#[^"]*)?"/g)){
       const path=match[1];await access(resolve('dist',`.${path}${path.endsWith('/')?'index.html':''}`));
     }
     const json=html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1];assert.equal(JSON.parse(json)['@type'],'Organization');
   }
+});
+test('Robots and sitemap match the release mode and canonical URLs', async () => {
+  const robots = await readFile('dist/robots.txt', 'utf8');
+  const sitemap = await readFile('dist/sitemap.xml', 'utf8');
+  const origin = new URL(config.origin).origin;
+  assert.equal(robots, config.production ? `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n');
+  const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
+  assert.equal(urls.length, 6);
+  assert.equal(new Set(urls).size, 6);
+  for (const url of urls) {
+    assert.equal(new URL(url).origin, origin);
+    const html = await readFile(resolve('dist', `.${new URL(url).pathname}index.html`), 'utf8');
+    assert.ok(html.includes(`<link rel="canonical" href="${url}">`));
+  }
+  assert.match(await readFile('dist/404.html', 'utf8'), /name="robots" content="noindex"/);
 });

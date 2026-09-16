@@ -15,9 +15,9 @@ Le choix explicite de l’utilisateur est Lightsail ; aucune publication Sites n
 3. Faire pointer `/var/www/serialcoders/current` vers cette version et adapter le virtual host. Vérifier `nginx -t` avant de recharger Nginx.
 4. Tester via une préproduction protégée ; conserver `production: false`. Ne pas basculer le domaine tant que les mentions légales et la configuration ne sont pas complètes.
 5. Configurer un certificat TLS couvrant le domaine et son alias www, une redirection HTTP vers HTTPS et www vers le domaine canonique. Vérifier le renouvellement. Le modèle fourni n’inclut volontairement aucun faux chemin de certificat.
-6. Pour la version publique prête : passer `production` à `true` dans `site.config.json`, relancer la génération et les vérifications, puis transférer cette version. Les tests de préproduction devront être adaptés à ce mode avant la recette finale.
+6. Pour la version publique prête : passer `production` à `true` dans `site.config.json`, relancer `npm run build` puis `npm test`, et transférer cette version. Les contrôles suivent automatiquement le mode configuré. Un test séparé vérifie aussi la génération indexable dans un répertoire temporaire sans modifier la préproduction.
 7. Basculer les DNS web vers l’IP statique en conservant les MX/TXT de messagerie. Garder l’ancien serveur pour le retour arrière. Conserver les anciennes ancres ; traiter toute autre URL trouvée dans les journaux/Search Console par une redirection pertinente.
-8. Vérifier HTTPS, robots, sitemap, canonique, contacts et réception GA4 réelle. Soumettre le sitemap dans Search Console après validation DNS.
+8. Exécuter `node scripts/check-deployment.mjs https://serialcoders.fr` : le contrôle compare les six pages et leurs ressources avec la version locale exacte, contrôle les réponses HTTP, la page absente et un éventuel en-tête de blocage d’indexation. Toute différence est un échec, pas un déploiement présumé réussi. Vérifier séparément les redirections HTTP/www, le rendu et la réception GA4 réelle. Soumettre le sitemap dans Search Console après validation DNS.
 
 ## Google
 
