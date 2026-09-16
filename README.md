@@ -1,6 +1,6 @@
 # Serial Coders — refonte
 
-Site statique français destiné à générer des demandes de développement sur mesure et de migration. Double expertise : WinDev, WebDev et WinDev Mobile d’une part, C# et JavaScript d’autre part. Cible : tous secteurs, France entière et projets internationaux. Le partenariat Gold PC SOFT est confirmé par l’utilisateur. Aucun serveur applicatif ni dépendance npm en production. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
+Site statique français destiné à générer des demandes de développement sur mesure et de migration. Double expertise : WinDev, WebDev et WinDev Mobile d’une part, C# et JavaScript d’autre part. Cible : tous secteurs, France entière et projets internationaux. Le partenariat Gold PC SOFT est confirmé par l’utilisateur. Le formulaire utilise une petite API Node.js sans dépendance npm, avec un relais mail local. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
 
 ## Développement
 
@@ -43,3 +43,13 @@ Voir `GOOGLE-SETUP.md` pour les actions qui nécessitent le propriétaire du com
 ## Provenance
 
 Audit : `AUDIT-REFONTE.md`, 16 septembre 2026. Logo : https://serialcoders.fr/wp-content/uploads/2026/04/logo-colonne-full.png.
+
+## Formulaire de contact
+
+Le formulaire /contact/ appelle POST /api/contact. Validation côté navigateur et serveur, taille limitée, champ piège et limite de cinq tentatives par IP sur dix minutes. Aucun message ni coordonnée n’est journalisé par l’API. La confirmation indique une acceptation par le relais local, pas une livraison garantie dans la boîte destinataire. Sans relais configuré, l’API retourne une indisponibilité et le navigateur conserve le texte.
+
+Pour Lightsail : installer Node.js 22+, copier scripts/contact-api.mjs sous /opt/serialcoders/scripts (hors racine web), installer un relais local compatible sendmail (par exemple Postfix) et le configurer avec votre fournisseur SMTP authentifié. Les identifiants restent dans la configuration privée du relais. Éviter un envoi direct SMTP sans relais ; vérifier SPF/DKIM et la délivrabilité avec le fournisseur.
+
+Créer /etc/serialcoders-contact.env (root, permissions 600) avec CONTACT_ORIGIN=https://serialcoders.fr, CONTACT_FROM et CONTACT_TO correspondant aux adresses validées, et CONTACT_SENDMAIL=/usr/sbin/sendmail. Adapter et installer deploy/contact.service, puis activer le service. Le modèle Nginx contient le proxy vers le port 4180, lié uniquement à 127.0.0.1. Ne pas exposer ce port. Le compte www-data doit être autorisé à soumettre au relais local. Vérifier les chemins Node et sendmail sur l’instance.
+
+Avant publication : tester une demande réelle jusqu’à sa réception, la réponse au visiteur, les erreurs et la file d’attente du relais. Compléter la politique de confidentialité avec la durée de conservation, les droits, les destinataires et les informations légales validées. En développement, redémarrer npm start après modification de l’API ; sans variables de messagerie, l’envoi reste volontairement indisponible. Les tests injectent un transport factice et n’envoient aucun email.

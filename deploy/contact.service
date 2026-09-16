@@ -1,0 +1,15 @@
+[Unit]
+Description=Serial Coders contact API
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/serialcoders
+EnvironmentFile=/etc/serialcoders-contact.env
+ExecStart=/usr/bin/node /opt/serialcoders/scripts/contact-api.mjs
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

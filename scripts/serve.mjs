@@ -2,9 +2,13 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 
+import { createContactHandler } from './contact-api.mjs';
+const contactHandler = createContactHandler();
+
 const root = resolve('dist');
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.xml':'application/xml','.txt':'text/plain; charset=utf-8'};
 createServer(async (request, response) => {
+  if (request.url === '/api/contact') return contactHandler(request, response);
   try {
     const path = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     let file = resolve(root, `.${path}`);
