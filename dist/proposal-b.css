@@ -209,3 +209,15 @@ header .brand-symbol img{display:block;width:54px;height:auto;max-width:none;pad
 
 /* Preserve the complete code-migration composition on every screen. */
 .hero-visual img,.proposal-panorama img{aspect-ratio:2060/763;object-fit:contain;object-position:center;height:auto}
+
+/* Signature contact panel: light canvas, black typography and metallic gold detail. */
+#contact.contact-band{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);gap:1.4rem 4rem;padding:3.5rem 6%;background:linear-gradient(110deg,#fff 0%,#fffdf6 60%,#f4e3ae 100%);border-top:4px solid var(--brand-gold);border-bottom:1px solid #d9bf71}
+#contact.contact-band:after{content:'{ }';position:absolute;right:1.5%;bottom:-3rem;font-family:'Space Grotesk',sans-serif;font-size:18rem;letter-spacing:-.12em;line-height:1;color:#b88b1510;z-index:-1;pointer-events:none}
+#contact.contact-band>.eyebrow{grid-column:1/-1;color:#1b1b1b;display:flex;align-items:center;gap:.8rem;font-size:.75rem;letter-spacing:.15em}
+#contact.contact-band>.eyebrow:before{content:'';width:2.5rem;height:3px;background:linear-gradient(90deg,#ad7c16,#edcc70)}
+#contact.contact-band h2{grid-column:1;grid-row:2/4;margin:0;font-size:clamp(2.3rem,4.5vw,4.1rem);font-weight:600;line-height:1.08;letter-spacing:-.055em}
+#contact.contact-band h2 em{display:inline-block;margin-top:.25rem;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-style:italic;color:#a17a12;letter-spacing:-.04em}
+#contact.contact-band>p{grid-column:2;align-self:end;margin:0;max-width:29rem;font-size:1rem;line-height:1.8;color:#383838}
+#contact.contact-band>.button{grid-column:2;justify-self:start;align-self:start;margin:0;background:#191919;color:#f5d477;border:1px solid #191919;border-bottom:3px solid #c69a30;padding:1.1rem 1.4rem;box-shadow:0 7px 20px #5c47131a}
+#contact.contact-band>.button:hover{background:#30302b;color:#ffe6a2}
+@media(max-width:760px){#contact.contact-band{grid-template-columns:1fr;gap:1.3rem;padding:2.5rem 5%}#contact.contact-band h2{grid-column:1;grid-row:auto;font-size:clamp(2.2rem,8vw,3.5rem)}#contact.contact-band>p,#contact.contact-band>.button{grid-column:1}#contact.contact-band:after{font-size:13rem;bottom:-1rem}}
