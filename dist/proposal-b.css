@@ -237,3 +237,9 @@ header .brand-symbol img{display:block;width:54px;height:auto;max-width:none;pad
  header.menu-enhanced .nav-number{font-size:.7rem;color:var(--accent);min-width:1.5rem}
  header.menu-enhanced nav .mobile-contact{display:flex;justify-content:space-between;margin-top:.65rem;padding:.85rem 1rem;background:var(--brand-gold);border:0;font-weight:700}
 }
+
+.section-icon{width:1.15rem;height:1.15rem;flex-shrink:0;color:var(--accent);vertical-align:middle}
+header nav a{gap:.4rem}header nav .nav-number{display:none}
+.section .section-marker{display:flex;align-items:center;gap:.75rem;border-left:0!important;padding-left:0!important}
+.section-marker .section-icon{width:2.45rem;height:2.45rem;padding:.48rem;border:1px solid #dfc77c;border-radius:7px;background:linear-gradient(135deg,#fffaf0,#f5e6b5);color:#80630d}
+@media(max-width:760px){header.menu-enhanced nav a{gap:.8rem}header.menu-enhanced nav .section-icon{width:1.25rem;height:1.25rem}.section-marker .section-icon{width:2.1rem;height:2.1rem;padding:.4rem}}
