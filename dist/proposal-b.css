@@ -163,3 +163,17 @@ html{scroll-padding-top:calc(var(--header-height, 155px) + 16px)}
 header{position:sticky;top:0;z-index:100;background:var(--bg);box-shadow:0 3px 12px #1818180a}
 .skip{z-index:101}
 @media(max-width:760px){html{scroll-padding-top:calc(var(--header-height, 245px) + 12px)}}
+
+/* A compact brand signature anchors the fixed navigation. */
+header{grid-template-columns:auto 1fr auto;gap:.8rem 2rem;padding-top:.85rem;background:linear-gradient(110deg,#fff 55%,#fffaf0);border-bottom:1px solid #e5d9b8;box-shadow:0 5px 24px #18181808}
+.brand{gap:.8rem}.brand img{width:55px;height:55px;padding:3px;background:transparent}.brand:after{font-size:1.55rem;letter-spacing:-.065em}
+.brand-baseline{justify-self:end;margin:0;padding-right:1.6rem;border-right:1px solid #dfcc97;line-height:1.35;text-align:right;font-family:'Space Grotesk',sans-serif}
+.brand-baseline span{display:block;font-size:.83rem;color:var(--muted);letter-spacing:.015em}.brand-baseline strong{display:block;color:var(--accent);font-size:1.35rem;font-weight:500;letter-spacing:-.035em}
+header>.nav-contact{border:1px solid #ca9f28;border-radius:7px;padding:.75rem 1rem;box-shadow:0 3px 0 #b78c2020;transition:background .2s,transform .2s}
+header>.nav-contact:hover{transform:translateY(-1px)}
+header nav{border-top:1px solid #e9e3d6;padding:.55rem 0;gap:.3rem .7rem}
+header nav a{padding:.45rem .35rem;border-radius:5px;transition:background .2s,color .2s}
+header nav a:hover,header nav a:focus-visible{background:#f6e9c2;color:#181818;text-decoration:none}
+.nav-number{font-size:.65rem;background:#f5ecd4;min-width:1.5rem;height:1.5rem;display:inline-grid;place-items:center;border-radius:4px}
+@media(max-width:1000px) and (min-width:761px){header{gap:.7rem 1rem}.brand-baseline{padding-right:1rem}.brand-baseline span{font-size:.73rem}.brand-baseline strong{font-size:1.15rem}.brand:after{font-size:1.3rem}}
+@media(max-width:760px){header{grid-template-columns:1fr auto;gap:.55rem 1rem;padding-top:.75rem}.brand img{width:42px;height:42px}.brand:after{font-size:1.2rem}.brand-baseline{grid-column:1/-1;grid-row:2;justify-self:end;border:0;padding:0;display:flex;gap:.35rem;align-items:baseline}.brand-baseline span{font-size:.72rem}.brand-baseline strong{font-size:.92rem}header>.nav-contact{grid-column:2;grid-row:1;font-size:.68rem;padding:.6rem .65rem}header nav{gap:.2rem .6rem;padding:.45rem 0}header nav a{padding:.25rem 0}.nav-number{min-width:1.3rem;height:1.3rem}}
