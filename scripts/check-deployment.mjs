@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile, readdir} from 'node:fs/promises';
 
 // Check the exact release on its target server; never mistake the old website for success.
 const argument = process.argv[2];
@@ -16,7 +16,8 @@ async function get(path) {
   return fetch(new URL(path, base), {signal: AbortSignal.timeout(15000), redirect: 'manual'});
 }
 let failures = 0;
-for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/editorial.css', '/site.js', '/config.js', '/logo.png', '/pcsoft-partner.png', '/migration-architecture.png']) {
+const fontFiles = (await readdir('dist/fonts')).map(file => `/fonts/${file}`);
+for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/editorial.css', '/modern.css', '/site.js', '/config.js', '/logo.png', '/pcsoft-partner.png', '/migration-architecture.png', ...fontFiles]) {
   try {
     const response = await get(route);
     assert.equal(response.status, 200, `HTTP ${response.status}`);
