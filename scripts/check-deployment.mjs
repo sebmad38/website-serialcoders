@@ -16,7 +16,7 @@ async function get(path) {
   return fetch(new URL(path, base), {signal: AbortSignal.timeout(15000), redirect: 'manual'});
 }
 let failures = 0;
-for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/site.js', '/config.js', '/logo.png']) {
+for (const route of [...routes, '/robots.txt', '/sitemap.xml', '/style.css', '/editorial.css', '/site.js', '/config.js', '/logo.png', '/pcsoft-partner.png', '/migration-architecture.png']) {
   try {
     const response = await get(route);
     assert.equal(response.status, 200, `HTTP ${response.status}`);

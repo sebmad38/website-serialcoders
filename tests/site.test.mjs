@@ -47,7 +47,7 @@ test('Saved refusal stays silent',()=>{
 });
 test('All pages have unique SEO metadata and resolvable internal links',async()=>{
   const files=await readdir('dist',{recursive:true});const titles=new Set();
-  const htmlFiles=files.filter(p=>p.endsWith('.html')&&p!=='404.html');assert.equal(htmlFiles.length,6);
+  const htmlFiles=files.filter(p=>p.endsWith('.html')&&p!=='404.html');assert.equal(htmlFiles.length,9);
   for(const file of htmlFiles){
     const html=await readFile(resolve('dist',file),'utf8');
     assert.equal((html.match(/<h1[ >]/g)||[]).length,1,file);
@@ -67,8 +67,8 @@ test('Robots and sitemap match the release mode and canonical URLs', async () =>
   const origin = new URL(config.origin).origin;
   assert.equal(robots, config.production ? `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n');
   const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
-  assert.equal(urls.length, 6);
-  assert.equal(new Set(urls).size, 6);
+  assert.equal(urls.length, 9);
+  assert.equal(new Set(urls).size, 9);
   for (const url of urls) {
     assert.equal(new URL(url).origin, origin);
     const html = await readFile(resolve('dist', `.${new URL(url).pathname}index.html`), 'utf8');

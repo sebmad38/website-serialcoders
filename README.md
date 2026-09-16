@@ -1,10 +1,10 @@
 # Serial Coders — refonte
 
-Site statique français destiné à générer des demandes de projets WinDev, WebDev et WinDev Mobile. Cible : France entière et projets internationaux. Aucun serveur applicatif ni dépendance npm en production. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
+Site statique français destiné à générer des demandes de développement sur mesure et de migration. Double expertise : WinDev, WebDev et WinDev Mobile d’une part, C# et JavaScript d’autre part. Cible : tous secteurs, France entière et projets internationaux. Le partenariat Gold PC SOFT est confirmé par l’utilisateur. Aucun serveur applicatif ni dépendance npm en production. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
 
 ## Développement
 
-Node.js 22 ou supérieur. `npm run build` génère les six pages depuis `scripts/build.mjs`. Les fichiers `dist/style.css`, `dist/site.js` et `dist/logo.png` sont des sources suivies dans Git : ne pas supprimer `dist` pour nettoyer une compilation. `npm test` vérifie les liens, les métadonnées et le comportement du consentement. `npm start` sert le site sur http://127.0.0.1:4173.
+Node.js 22 ou supérieur. `npm run build` génère neuf pages depuis `scripts/build.mjs` et `scripts/editorial.mjs`. Le second fichier contient le positionnement commercial, la migration et les contenus C#/JavaScript. Les fichiers CSS, JavaScript et images de `dist/` sont des sources suivies dans Git : ne pas supprimer `dist` pour nettoyer une compilation. `npm test` vérifie les liens, les métadonnées et le comportement du consentement. `npm start` sert le site sur http://127.0.0.1:4173.
 
 ## Déploiement Lightsail
 
@@ -17,7 +17,7 @@ Le choix explicite de l’utilisateur est Lightsail ; aucune publication Sites n
 5. Configurer un certificat TLS couvrant le domaine et son alias www, une redirection HTTP vers HTTPS et www vers le domaine canonique. Vérifier le renouvellement. Le modèle fourni n’inclut volontairement aucun faux chemin de certificat.
 6. Pour la version publique prête : passer `production` à `true` dans `site.config.json`, relancer `npm run build` puis `npm test`, et transférer cette version. Les contrôles suivent automatiquement le mode configuré. Un test séparé vérifie aussi la génération indexable dans un répertoire temporaire sans modifier la préproduction.
 7. Basculer les DNS web vers l’IP statique en conservant les MX/TXT de messagerie. Garder l’ancien serveur pour le retour arrière. Conserver les anciennes ancres ; traiter toute autre URL trouvée dans les journaux/Search Console par une redirection pertinente.
-8. Exécuter `node scripts/check-deployment.mjs https://serialcoders.fr` : le contrôle compare les six pages et leurs ressources avec la version locale exacte, contrôle les réponses HTTP, la page absente et un éventuel en-tête de blocage d’indexation. Toute différence est un échec, pas un déploiement présumé réussi. Vérifier séparément les redirections HTTP/www, le rendu et la réception GA4 réelle. Soumettre le sitemap dans Search Console après validation DNS.
+8. Exécuter `node scripts/check-deployment.mjs https://serialcoders.fr` : le contrôle compare les neuf pages et leurs ressources avec la version locale exacte, contrôle les réponses HTTP, la page absente et un éventuel en-tête de blocage d’indexation. Toute différence est un échec, pas un déploiement présumé réussi. Vérifier séparément les redirections HTTP/www, le rendu et la réception GA4 réelle. Soumettre le sitemap dans Search Console après validation DNS.
 
 ## Google
 
@@ -32,7 +32,7 @@ Voir `GOOGLE-SETUP.md` pour les actions qui nécessitent le propriétaire du com
 ## État et données manquantes
 
 - Les contacts publics et le logo proviennent du site existant.
-- Les affirmations « Gold Partner » et les références clients sont omises jusqu’à confirmation.
+- Le partenariat Gold et les compétences C#/JavaScript sont confirmés par l’utilisateur. Aucune référence client, réalisation chiffrée ou économie garantie n’est inventée.
 - La mesure GA4 est préparée mais non activée ; Search Console et la fiche d’entreprise ne sont pas créées.
 - Les mentions légales complètes nécessitent la raison sociale, les coordonnées du siège, l’immatriculation, le responsable de publication et les informations d’hébergement validées. La page de confidentialité actuelle décrit le fonctionnement technique et doit être complétée avant lancement selon les traitements réels.
 - Le serveur, son système, les accès de déploiement et le compte Google ne sont pas encore disponibles dans cette tâche.
