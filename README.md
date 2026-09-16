@@ -4,7 +4,7 @@ Site statique français destiné à générer des demandes de développement sur
 
 ## Développement
 
-Le thème visuel est défini dans `dist/modern.css`, au-dessus des styles de structure. Il utilise Space Grotesk pour les titres et Manrope pour le texte, servies localement en WOFF2 variable (`dist/fonts/`). Les licences OFL sont incluses ; aucune requête vers Google Fonts n’est émise par le site. Les effets de survol respectent la préférence de réduction des animations.
+Le thème est sélectionné par `design` dans `site.config.json` : `editorial` active la proposition claire/cobalt (`dist/proposal-b.css`), `modern` restaure la proposition sombre/dorée (`dist/modern.css`). Relancer `npm run build` après le choix. Les deux versions sont conservées ; un seul thème est chargé par page. La proposition claire utilise aussi Georgia en italique pour l’accent des grands titres. Space Grotesk et Manrope sont servies localement en WOFF2 variable (`dist/fonts/`). Les licences OFL sont incluses ; aucune requête vers Google Fonts n’est émise par le site. Les effets de survol respectent la préférence de réduction des animations.
 
 Node.js 22 ou supérieur. `npm run build` génère neuf pages depuis `scripts/build.mjs` et `scripts/editorial.mjs`. Le second fichier contient le positionnement commercial, la migration et les contenus C#/JavaScript. Les fichiers CSS, JavaScript et images de `dist/` sont des sources suivies dans Git : ne pas supprimer `dist` pour nettoyer une compilation. `npm test` vérifie les liens, les métadonnées et le comportement du consentement. `npm start` sert le site sur http://127.0.0.1:4173.
 

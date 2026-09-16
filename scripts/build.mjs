@@ -2,6 +2,9 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { homePage, migrationPage, newTechnologyPages, enrichExistingService } from './editorial.mjs';
 
 const config = JSON.parse(await readFile(new URL('../site.config.json', import.meta.url), 'utf8'));
+const design = config.design || 'modern';
+if (!['modern', 'editorial'].includes(design)) throw new Error('Design inconnu.');
+const themeStylesheet = design === 'editorial' ? '/proposal-b.css' : '/modern.css';
 const origin = new URL(config.origin);
 if (origin.protocol !== 'https:' || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) throw new Error('L’origine doit être une URL HTTPS sans chemin ni identifiants.');
 if (config.googleAnalyticsId && !/^G-[A-Z0-9]+$/.test(config.googleAnalyticsId)) throw new Error('Identifiant GA4 invalide.');
@@ -22,9 +25,18 @@ await mkdir('dist', {recursive:true});
 pages.push(migrationPage, ...newTechnologyPages);
 for (const initialPage of pages) {
   const page = enrichExistingService(initialPage);
+  page.body = page.body.replace(/(<figure class="architecture-figure hero-visual">[^]*?)loading="lazy"/, '$1loading="eager" fetchpriority="high"');
+  if (design === 'editorial') {
+    page.body = page.body.replaceAll('/migration-architecture.png', '/migration-cobalt.png');
+    if (page.path === '/migration-applications-pcsoft/') {
+      // Move the illustration to a wide introductory band instead of repeating it.
+      page.body = page.body.replace(/<figure class="architecture-figure[^]*?<\/figure>/, '');
+      page.body = page.body.replace('</section>', '<figure class="proposal-panorama"><img src="/migration-cobalt.png" width="1536" height="1024" alt="Illustration conceptuelle de structures blanches reliées par des passerelles bleu cobalt." decoding="async"></figure></section>');
+    }
+  }
   const url = new URL(page.path, origin).href;
   const schema = {'@context':'https://schema.org','@type':'Organization',name:'Serial Coders',url:origin.origin,email:'contact@serialcoders.fr',telephone:'+33663686865'};
-  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)}</title><meta name="description" content="${escape(page.description)}"><meta name="robots" content="${config.production ? 'index, follow' : 'noindex, nofollow'}"><link rel="canonical" href="${escape(url)}"><meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="${escape(page.title)}"><meta property="og:description" content="${escape(page.description)}"><meta property="og:url" content="${escape(url)}">${config.googleSiteVerification ? `<meta name="google-site-verification" content="${escape(config.googleSiteVerification)}">` : ''}<link rel="icon" href="/logo.png"><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="/modern.css"><script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script></head><body>${header}<main id="contenu">${page.body}</main>${footer}</body></html>`;
+  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)}</title><meta name="description" content="${escape(page.description)}"><meta name="robots" content="${config.production ? 'index, follow' : 'noindex, nofollow'}"><link rel="canonical" href="${escape(url)}"><meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="${escape(page.title)}"><meta property="og:description" content="${escape(page.description)}"><meta property="og:url" content="${escape(url)}">${config.googleSiteVerification ? `<meta name="google-site-verification" content="${escape(config.googleSiteVerification)}">` : ''}<link rel="icon" href="/logo.png"><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="${themeStylesheet}"><script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script></head><body>${header}<main id="contenu">${page.body}</main>${footer}</body></html>`;
   const directory = `dist${page.path}`;
   await mkdir(directory, {recursive:true});
   await writeFile(`${directory}index.html`, html);
