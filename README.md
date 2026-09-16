@@ -2,6 +2,10 @@
 
 Site statique français destiné à générer des demandes de développement sur mesure et de migration. Double expertise : WinDev, WebDev et WinDev Mobile d’une part, C# et JavaScript d’autre part. Cible : tous secteurs, France entière et projets internationaux. Le partenariat Gold PC SOFT est confirmé par l’utilisateur. Le formulaire utilise une petite API Node.js sans dépendance npm, avec un relais mail local. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
 
+## Couverture locale PC SOFT
+
+Voir [SEO-LOCAL.md](SEO-LOCAL.md) pour les 2 280 pages locales, les 107 pages de territoires, la provenance des populations et les limites de cette stratégie SEO. Le total est désormais de 2 397 pages, et non neuf : le contrôle de déploiement suit toutes les routes du sitemap. La préproduction reste non indexable.
+
 ## Développement
 
 Le thème est sélectionné par `design` dans `site.config.json` : `editorial` active la proposition claire, noir et or (`dist/proposal-b.css`), `modern` restaure la proposition sombre/dorée (`dist/modern.css`). Relancer `npm run build` après le choix. Les deux versions sont conservées ; un seul thème est chargé par page. La proposition claire utilise aussi Georgia en italique pour l’accent des grands titres. Space Grotesk et Manrope sont servies localement en WOFF2 variable (`dist/fonts/`). Les licences OFL sont incluses ; aucune requête vers Google Fonts n’est émise par le site. Les effets de survol respectent la préférence de réduction des animations.

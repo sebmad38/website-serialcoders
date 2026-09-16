@@ -3,6 +3,15 @@
   if (!form) return;
   const status = document.getElementById('contact-status');
   const button = form.querySelector('button[type="submit"]');
+  const isPublicDemo = location.hostname.endsWith('.chatgpt.site');
+  if (isPublicDemo) {
+    const notice = document.createElement('p');
+    notice.className = 'form-note';
+    notice.textContent = 'Version de démonstration : vous pouvez explorer ce formulaire, mais l’envoi des messages et des documents n’est pas activé. Pour nous contacter, utilisez l’email ou le téléphone indiqués ci-dessus.';
+    form.prepend(notice);
+    button.disabled = true;
+    button.textContent = 'Envoi désactivé sur la démonstration';
+  }
   const picker = document.getElementById('contact-documents');
   const list = document.getElementById('document-list');
   const feedback = document.getElementById('document-feedback');

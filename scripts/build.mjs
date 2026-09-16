@@ -1,7 +1,9 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { homePage, migrationPage, newTechnologyPages, enrichExistingService } from './editorial.mjs';
+import {createLocalPages, departmentPath} from './local-pages.mjs';
 
 const config = JSON.parse(await readFile(new URL('../site.config.json', import.meta.url), 'utf8'));
+const communeDataset = JSON.parse(await readFile(new URL('../data/communes.json', import.meta.url), 'utf8'));
 const design = config.design || 'modern';
 if (!['modern', 'editorial'].includes(design)) throw new Error('Design inconnu.');
 const themeStylesheet = design === 'editorial' ? '/proposal-b.css' : '/modern.css';
@@ -28,23 +30,27 @@ const pages = [{path:'/', ...homePage},
 {path:'/confidentialite/',title:'Confidentialité et cookies | Serial Coders',description:'Informations sur les contacts et les préférences de mesure d’audience du site Serial Coders.',body:`<section class="section legal"><h1>Confidentialité<br>et cookies</h1><h2>Prendre contact</h2><p>Le formulaire transmet votre nom, votre email, votre message et, si vous les renseignez, votre entreprise, votre téléphone et les documents joints à Serial Coders par email pour traiter votre demande et vous recontacter. Les champs facultatifs peuvent rester vides. Les documents joints sont transmis en pièces jointes par email, sans stockage dans un répertoire public du site. Le formulaire n’inscrit à aucune newsletter. Une protection contre les envois abusifs conserve temporairement un compteur de tentatives par adresse IP en mémoire du serveur pendant dix minutes. Les liens de contact direct ouvrent votre messagerie ou votre application téléphonique. Pour toute question sur les informations communiquées lors d’un échange, écrivez à <a href="mailto:contact@serialcoders.fr">contact@serialcoders.fr</a>.</p><h2>Mesure d’audience</h2><p>${config.googleAnalyticsId ? 'Google Analytics est configuré pour mesurer les visites et les clics sur les liens de contact uniquement après votre accord. Aucune fonction publicitaire n’est activée. Les messages et coordonnées que vous adressez à Serial Coders ne sont pas transmis par ce suivi.' : 'La mesure d’audience Google Analytics n’est pas activée sur cette version du site.'}</p><h2>Votre choix</h2><p>Lorsque la mesure d’audience est disponible, vous pouvez l’accepter ou la refuser. Le lien « Gérer les cookies » permet de changer votre choix. Cette préférence est conservée dans votre navigateur pendant six mois. Sans accès au stockage du navigateur, elle s’applique seulement à la page en cours.</p></section>`}];
 await mkdir('dist', {recursive:true});
 pages.push(migrationPage, ...newTechnologyPages);
+pages.push(...createLocalPages(communeDataset));
 for (const initialPage of pages) {
   const page = enrichExistingService(initialPage);
   page.body = page.body.replace(/(<figure class="architecture-figure hero-visual">[^]*?)loading="lazy"/, '$1loading="eager" fetchpriority="high"');
   if (design === 'editorial') {
-    page.body = page.body.replaceAll('/migration-architecture.png', '/migration-gold-light.png');
+    page.body = page.body.replaceAll('/migration-architecture.png', '/migration-code.png');
     if (page.path === '/migration-applications-pcsoft/') {
       // Move the illustration to a wide introductory band instead of repeating it.
       page.body = page.body.replace(/<figure class="architecture-figure[^]*?<\/figure>/, '');
-      page.body = page.body.replace('</section>', '<figure class="proposal-panorama"><img src="/migration-gold-light.png" width="1536" height="1024" alt="Illustration conceptuelle de structures blanches reliées par des passerelles dorées." decoding="async"></figure></section>');
+      page.body = page.body.replace('</section>', '<figure class="proposal-panorama"><img src="/migration-code.png" width="2060" height="763" alt="Migration du code et des données d’une application métier vers une interface modernisée." decoding="async"></figure></section>');
     }
   }
   const url = new URL(page.path, origin).href;
   const schema = {'@context':'https://schema.org','@type':'Organization',name:'Serial Coders',url:origin.origin,email:'contact@serialcoders.fr',telephone:'+33428292600'};
+  // Describe an area served, never a fictional branch office or street address.
+  const localSchema = page.area ? [{'@context':'https://schema.org','@type':'Service',name:`Développement PC SOFT et migration WinDev multitechnologie à ${page.area.nom}`,url,provider:{'@type':'Organization',name:'Serial Coders',url:origin.origin},areaServed:{'@type':'City',name:page.area.nom,identifier:page.area.code,containedInPlace:{'@type':'AdministrativeArea',name:page.area.departement.nom}}},{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[['France','/zones-intervention/'],[page.area.departement.nom,departmentPath(page.area.departement)],[page.area.nom,page.path]].map(([name,path],index)=>({'@type':'ListItem',position:index+1,name,item:new URL(path,origin).href}))}] : [];
+  const extraSchema = localSchema.map(value => `<script type="application/ld+json">${JSON.stringify(value).replace(/</g,'\\u003c')}</script>`).join('');
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)}</title><meta name="description" content="${escape(page.description)}"><meta name="robots" content="${config.production ? 'index, follow' : 'noindex, nofollow'}"><link rel="canonical" href="${escape(url)}"><meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="${escape(page.title)}"><meta property="og:description" content="${escape(page.description)}"><meta property="og:url" content="${escape(url)}">${config.googleSiteVerification ? `<meta name="google-site-verification" content="${escape(config.googleSiteVerification)}">` : ''}<link rel="icon" href="/logo.png"><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="${themeStylesheet}"><script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script></head><body>${header}<main id="contenu">${page.body}</main>${footer}</body></html>`;
   const directory = `dist${page.path}`;
   await mkdir(directory, {recursive:true});
-  await writeFile(`${directory}index.html`, html);
+  await writeFile(`${directory}index.html`, html.replace('</head>', `${extraSchema}<link rel="stylesheet" href="/local.css"></head>`).replace('<a href="/confidentialite/">', '<a href="/zones-intervention/">Villes et territoires</a><a href="/confidentialite/">'));
 }
 await writeFile('dist/config.js', `window.SERIAL_CODERS_CONFIG = ${JSON.stringify({googleAnalyticsId:config.googleAnalyticsId})};\n`);
 await writeFile('dist/robots.txt', config.production ? `User-agent: *\nAllow: /\nSitemap: ${origin.origin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n');

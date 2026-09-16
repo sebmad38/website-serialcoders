@@ -11,6 +11,9 @@ test('Production build is indexable without altering the preview', async () => {
     await mkdir(join(directory, 'scripts'));
     await copyFile('scripts/build.mjs', join(directory, 'scripts/build.mjs'));
     await copyFile('scripts/editorial.mjs', join(directory, 'scripts/editorial.mjs'));
+    await copyFile('scripts/local-pages.mjs', join(directory, 'scripts/local-pages.mjs'));
+    await mkdir(join(directory, 'data'));
+    await copyFile('data/communes.json', join(directory, 'data/communes.json'));
     const config = JSON.parse(await readFile('site.config.json', 'utf8'));
     config.production = true;
     await writeFile(join(directory, 'site.config.json'), JSON.stringify(config));
@@ -18,7 +21,9 @@ test('Production build is indexable without altering the preview', async () => {
     const robots = await readFile(join(directory, 'dist/robots.txt'), 'utf8');
     assert.match(robots, /Allow: \//);
     assert.doesNotMatch(robots, /Disallow:/);
-    for (const route of ['', 'developpement-windev/', 'developpement-webdev/', 'developpement-windev-mobile/', 'contact/', 'confidentialite/', 'migration-applications-pcsoft/', 'developpement-csharp/', 'developpement-javascript/']) {
+    const sitemap = await readFile(join(directory, 'dist/sitemap.xml'), 'utf8');
+    const routes = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => new URL(match[1]).pathname.slice(1));
+    for (const route of routes) {
       const html = await readFile(join(directory, `dist/${route}index.html`), 'utf8');
       assert.match(html, /name="robots" content="index, follow"/);
       assert.doesNotMatch(html, /noindex/);

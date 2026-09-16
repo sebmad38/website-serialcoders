@@ -3,7 +3,7 @@
 const action = (label = 'Parlons de votre projet') => `<a class="button" href="/contact/">${label} <span aria-hidden="true">↗</span></a>`;
 const migrationAction = '<a class="text-link" href="/migration-applications-pcsoft/">Comprendre notre accompagnement migration <span aria-hidden="true">↗</span></a>';
 const partner = '<img class="partner-logo" src="/pcsoft-partner.png" width="250" height="68" loading="lazy" alt="PC SOFT — Gold Partner">';
-const figure = (className = '') => `<figure class="architecture-figure ${className}"><img src="/migration-architecture.png" width="1536" height="1024" alt="Illustration conceptuelle de deux architectures logicielles reliées par des passerelles." decoding="async" loading="lazy"><figcaption>Préserver la logique métier. Faire évoluer l’architecture.</figcaption></figure>`;
+const figure = (className = '') => `<figure class="architecture-figure ${className}"><img src="/migration-code.png" width="2060" height="763" alt="Migration du code et des données d’une application métier vers une interface modernisée." decoding="async" loading="lazy"><figcaption>Préserver la logique métier. Faire évoluer l’architecture.</figcaption></figure>`;
 const migrationSteps = [
   ['Comprendre l’existant', 'Code, données, règles métier, interfaces et usages : nous identifions ce qui fait fonctionner votre application, y compris les dépendances peu visibles.', 'Une cartographie du périmètre et des points de vigilance.'],
   ['Comparer les trajectoires', 'Maintien, modernisation ciblée ou migration : nous rapprochons les besoins fonctionnels, les contraintes d’exploitation et les coûts de chaque scénario.', 'Une cible technique et une feuille de route à arbitrer.'],
