@@ -155,3 +155,5 @@ h1 em,.migration-feature h2 em,.tech-monogram,.step-number,.sector-index,.databa
 #contact-status:empty{display:none}#contact-status{padding:1rem;border-left:3px solid var(--gold);background:#fff;font-size:.95rem}
 #contact-status[data-state="error"]{border-color:#a52a2a}#contact-status[data-state="success"]{border-color:#33733b}
 @media(max-width:760px){.contact-form-section{grid-template-columns:1fr;gap:1.5rem}.form-fields{grid-template-columns:1fr}}
+
+.document-upload{border:1px dashed var(--accent);padding:1.2rem;margin:1.25rem 0;background:#fff}.document-upload label span{font-weight:400}.document-upload input::file-selector-button{font:inherit;background:#f7e6b6;border:0;padding:.5rem .7rem;margin-right:.7rem;cursor:pointer}#document-list{list-style:none;padding:0;margin:.8rem 0 0}#document-list li{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);padding:.65rem 0;font-size:.85rem}#document-list span{overflow-wrap:anywhere;min-width:0}#document-list button{padding:.4rem .6rem;background:var(--surface);color:var(--ink);text-decoration:underline;flex-shrink:0}#document-feedback:empty{display:none}

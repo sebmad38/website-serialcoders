@@ -28,3 +28,20 @@ test('Delivery failure is reported without a false success', async () => {
     assert.equal(result.status, 503);
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
+import { validateAttachments, composeContactMail, validateContact } from '../scripts/contact-api.mjs';
+const document = { name: 'cahier-des-charges.txt', content: Buffer.from('Description du projet').toString('base64') };
+test('Attachments enforce count, combined size, names, encoding and file types', () => {
+  assert.equal(validateAttachments([document])[0].type, 'text/plain');
+  for (const files of [Array(6).fill(document), [{ ...document, name: 'app.exe' }], [{ ...document, name: '../secret.txt' }], [{ ...document, name: 'a\r\nBcc.txt' }], [{ ...document, content: '!!' }], [{ ...document, content: '' }], [{ ...document, name: 'fake.pdf' }], [{ ...document, content: Buffer.alloc(6 * 1024 * 1024, 65).toString('base64') }, { ...document, content: Buffer.alloc(5 * 1024 * 1024, 65).toString('base64') }]]) {
+    assert.throws(() => validateAttachments(files), /attachments/);
+  }
+});
+test('Mail includes original attachment contents with safe MIME filenames', () => {
+  const data = validateContact({ ...payload, attachments: [document, { ...document, name: 'spécifications.txt' }] });
+  const mail = composeContactMail(data, 'sender@example.com', 'recipient@example.com');
+  assert.match(mail, /multipart\/mixed/);
+  assert.equal((mail.match(/Content-Disposition: attachment/g) || []).length, 2);
+  assert.ok(mail.includes(document.content));
+  assert.match(mail, /sp%C3%A9cifications.txt/);
+  assert.equal(validateContact(payload).attachments.length, 0);
+});
