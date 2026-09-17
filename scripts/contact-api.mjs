@@ -55,7 +55,8 @@ export function deliverContact(data) {
   if (!sender || !recipient || !executable || !emailPattern.test(sender) || !emailPattern.test(recipient)) return Promise.reject(new Error('unconfigured'));
   const message = composeContactMail(data, sender, recipient);
   return new Promise((resolve, reject) => {
-    const child = spawn(executable, ['-i', '-t'], { stdio: ['pipe', 'ignore', 'ignore'], timeout: 10000 });
+    // Keep the SMTP envelope sender aligned with the provider-verified From address.
+    const child = spawn(executable, ['-i', '-t', '-f', sender], { stdio: ['pipe', 'ignore', 'ignore'], timeout: 10000 });
     child.on('error', reject);
     child.stdin.on('error', reject);
     child.on('close', code => code === 0 ? resolve() : reject(new Error('delivery')));

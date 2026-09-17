@@ -6,10 +6,15 @@ After=network.target
 User=www-data
 WorkingDirectory=/opt/serialcoders
 EnvironmentFile=/etc/serialcoders-contact.env
-ExecStart=/usr/bin/node /opt/serialcoders/scripts/contact-api.mjs
+ExecStart=/usr/local/bin/node /opt/serialcoders/scripts/contact-api.mjs
 Restart=on-failure
-NoNewPrivileges=true
+# Postfix sendmail needs the setgid postdrop helper to queue messages.
+NoNewPrivileges=false
 PrivateTmp=true
+MemoryHigh=192M
+MemoryMax=256M
+TasksMax=32
+UMask=0077
 
 [Install]
 WantedBy=multi-user.target
