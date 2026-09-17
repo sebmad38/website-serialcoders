@@ -1,6 +1,6 @@
 {
   "origin": "https://serialcoders.fr",
-  "production": false,
+  "production": true,
   "design": "editorial",
   "googleAnalyticsId": "",
   "googleSiteVerification": ""

@@ -11,6 +11,7 @@ test('Production build is indexable without altering the preview', async () => {
     await mkdir(join(directory, 'scripts'));
     await copyFile('scripts/build.mjs', join(directory, 'scripts/build.mjs'));
     await copyFile('scripts/editorial.mjs', join(directory, 'scripts/editorial.mjs'));
+    await copyFile('scripts/buyer-services.mjs', join(directory, 'scripts/buyer-services.mjs'));
     await copyFile('scripts/local-pages.mjs', join(directory, 'scripts/local-pages.mjs'));
     await mkdir(join(directory, 'data'));
     await copyFile('data/communes.json', join(directory, 'data/communes.json'));

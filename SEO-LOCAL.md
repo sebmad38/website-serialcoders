@@ -14,7 +14,7 @@ La source inclut l’outre-mer et certaines subdivisions territoriales. Six terr
 
 Chaque page dispose d’un titre, d’une description, d’une canonique propre, d’un H1, de liens vers son territoire et les services détaillés. Le sitemap contient toutes les routes. Les pages locales portent des données structurées Service et BreadcrumbList, avec une zone desservie ; aucune agence, adresse locale, certification supplémentaire ou référence client n’est inventée.
 
-La préproduction reste en `noindex, nofollow`, avec exploration bloquée dans robots.txt. Le mode `production: true` rend toutes les pages indexables. Il ne les publie pas et ne déclenche pas leur indexation. Les contrôles de mise en production du README restent applicables.
+À la demande de l’utilisateur, la version générée est désormais en mode production : `index, follow` et exploration autorisée dans robots.txt. Le déploiement public reste à effectuer. Pour une future préproduction, rétablir `production: false`. Le mode `production: true` rend toutes les pages indexables. Il ne les publie pas et ne déclenche pas leur indexation. Les contrôles de mise en production du README restent applicables.
 
 La génération n’est pas une garantie de classement. Les pages partagent une offre et une trame communes ; les seules données géographiques ne constituent pas une preuve d’expertise locale. Google peut ignorer ces pages ou considérer leur multiplication comme des pages satellites si elles n’apportent pas suffisamment de valeur : https://developers.google.com/search/docs/essentials/spam-policies?hl=fr.
 

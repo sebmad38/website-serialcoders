@@ -4,8 +4,9 @@ import vm from 'node:vm';
 import {readFile, readdir, access} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createLocalPages} from '../scripts/local-pages.mjs';
+import {buyerServicePages} from '../scripts/buyer-services.mjs';
 const dataset = JSON.parse(await readFile('data/communes.json', 'utf8'));
-const expectedPageCount = 9 + createLocalPages(dataset).length;
+const expectedPageCount = 9 + buyerServicePages.length + createLocalPages(dataset).length;
 
 const source = await readFile('dist/site.js','utf8');
 const config = JSON.parse(await readFile('site.config.json', 'utf8'));
