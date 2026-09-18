@@ -8,8 +8,7 @@ export const legalPage = {
     <h1>Mentions légales</h1>
     <p>
       <strong>Page en cours de finalisation.</strong> Les mentions relatives à l’hébergement restent
-      à finaliser, notamment l’identité juridique complète de l’hébergeur et son numéro de
-      téléphone.
+      à finaliser, notamment l’identité juridique complète de l’hébergeur.
     </p>
     <h2>Éditeur du site</h2>
     <p>
@@ -39,7 +38,7 @@ export const legalPage = {
       :
       <a href="https://aws.amazon.com/fr/contact-us/"
         >contacter AWS et accéder au formulaire de demande de rappel</a
-      >.<br />Numéro de téléphone de l’hébergeur : à compléter.
+      >.
     </p>
     <h2>Contenus et marques</h2>
     <p>

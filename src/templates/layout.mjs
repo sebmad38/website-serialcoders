@@ -38,23 +38,49 @@ export const header = /* HTML */ `<a class="skip" href="#contenu">Aller au conte
       >
     </nav>
   </header>`;
-export const footer = /* HTML */ `<footer>
+export const footer = /* HTML */ `<footer class="site-footer">
     <div class="footer-main">
-      <div>
-        <strong>SERIAL CODERS</strong>
-        <p>Des logiciels conçus autour de votre métier.</p>
+      <div class="footer-identity">
+        <a class="footer-brand" href="/" aria-label="Serial Coders — accueil"
+          ><span class="footer-symbol" aria-hidden="true"
+            ><img src="/logo.png" width="1000" height="1486" alt="" loading="lazy" /></span
+          ><span>serial<span>coders</span><i aria-hidden="true">.</i></span></a
+        >
+        <p class="footer-baseline">Le code au cœur<br />de vos valeurs.</p>
+        <p class="footer-reach">Applications sur mesure · France &amp; international</p>
       </div>
-      <div>
-        <a href="mailto:contact@serialcoders.fr" data-event="contact_email_click"
+      <nav class="footer-expertise" aria-label="Nos expertises">
+        <h2>Vos projets, notre expertise</h2>
+        <a href="/#domaines">Développement sur mesure <span aria-hidden="true">↗</span></a>
+        <a href="/migration-applications-pcsoft/"
+          >Migration d’applications <span aria-hidden="true">↗</span></a
+        >
+        <a href="/#bases-de-donnees">Bases de données <span aria-hidden="true">↗</span></a>
+      </nav>
+      <div class="footer-contact">
+        <h2>Faisons avancer votre projet</h2>
+        <a class="footer-phone" href="tel:+33428292600" data-event="contact_phone_click"
+          >04 28 29 26 00</a
+        >
+        <a
+          class="footer-email"
+          href="mailto:contact@serialcoders.fr"
+          data-event="contact_email_click"
           >contact@serialcoders.fr</a
-        ><a href="tel:+33428292600" data-event="contact_phone_click">04 28 29 26 00</a>
+        >
+        <a class="footer-cta" href="/contact/"
+          >Parlons de votre besoin <span aria-hidden="true">↗</span></a
+        >
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© ${new Date().getFullYear()} Serial Coders</span
-      ><a href="/mentions-legales/">Mentions légales</a
-      ><a href="/confidentialite/">Confidentialité</a
-      ><button type="button" id="cookie-settings">Gérer les cookies</button>
+      <span>© 2026 Serial Coders</span>
+      <nav class="footer-legal" aria-label="Informations légales">
+        <a href="/mentions-legales/">Mentions légales</a>
+        <a href="/confidentialite/">Confidentialité</a>
+        <button type="button" id="cookie-settings">Gérer les cookies</button>
+      </nav>
+      <a class="footer-top" href="#contenu">Haut de page <span aria-hidden="true">↑</span></a>
     </div>
   </footer>
   <section id="consent" class="consent" aria-labelledby="consent-title" hidden>
