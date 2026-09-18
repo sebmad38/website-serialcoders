@@ -1,21 +1,48 @@
-export const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
-export const slugify = value => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/œ/g, 'oe').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-export const cityPath = city => `/zones-intervention/${slugify(city.nom)}-${city.code}/`;
-export const departmentPath = department => `/zones-intervention/departement-${department.code.toLowerCase()}-${slugify(department.nom)}/`;
+export const escapeHtml = (value) =>
+  String(value).replace(
+    /[&<>"']/g,
+    (character) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character],
+  );
+export const slugify = (value) =>
+  value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/œ/g, 'oe')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+export const cityPath = (city) => `/zones-intervention/${slugify(city.nom)}-${city.code}/`;
+export const departmentPath = (department) =>
+  `/zones-intervention/departement-${department.code.toLowerCase()}-${slugify(department.nom)}/`;
 
 /** Fail closed: a corrupt or empty source must never silently remove the coverage. */
 export function selectCities(records) {
   if (!Array.isArray(records) || !records.length) throw new Error('Référentiel de communes vide.');
   const codes = new Set();
-  return records.filter(city => Number.isInteger(city.population) && city.population > 5000).map(city => {
-    if (!/^[0-9A-Z]{5}$/.test(city.code) || !city.nom || !city.departement?.nom || !city.region?.nom || !/^[0-9A-Z]{2,3}$/.test(city.departement.code) || !Array.isArray(city.codesPostaux) || city.codesPostaux.some(code => !/^\d{5}$/.test(code)) || codes.has(city.code)) throw new Error(`Commune invalide ou dupliquée : ${city.code}`);
-    codes.add(city.code);
-    return city;
-  }).sort((a,b) => a.nom.localeCompare(b.nom, 'fr') || a.code.localeCompare(b.code));
+  return records
+    .filter((city) => Number.isInteger(city.population) && city.population > 5000)
+    .map((city) => {
+      if (
+        !/^[0-9A-Z]{5}$/.test(city.code) ||
+        !city.nom ||
+        !city.departement?.nom ||
+        !city.region?.nom ||
+        !/^[0-9A-Z]{2,3}$/.test(city.departement.code) ||
+        !Array.isArray(city.codesPostaux) ||
+        city.codesPostaux.some((code) => !/^\d{5}$/.test(code)) ||
+        codes.has(city.code)
+      )
+        throw new Error(`Commune invalide ou dupliquée : ${city.code}`);
+      codes.add(city.code);
+      return city;
+    })
+    .sort((a, b) => a.nom.localeCompare(b.nom, 'fr') || a.code.localeCompare(b.code));
 }
 
 const link = (path, label) => `<a href="${escapeHtml(path)}">${escapeHtml(label)}</a>`;
-const cityLinks = cities => `<ul class="local-links">${cities.map(city => `<li>${link(cityPath(city), city.nom)} <span>(${escapeHtml(city.code)})</span></li>`).join('')}</ul>`;
+const cityLinks = (cities) =>
+  `<ul class="local-links">${cities.map((city) => `<li>${link(cityPath(city), city.nom)} <span>(${escapeHtml(city.code)})</span></li>`).join('')}</ul>`;
 const action = '<a class="button" href="/contact/">Décrire mon projet ↗</a>';
 const serviceCards = `<div class="offer-grid"><article><h3>WinDev et HFSQL</h3><p>Créer un logiciel métier, reprendre une application ou faire évoluer ses traitements et ses échanges de données.</p>${link('/developpement-windev/', 'Développement WinDev')}</article><article><h3>WebDev et WinDev Mobile</h3><p>Mettre à disposition un portail web ou un outil terrain, en étudiant les accès, les appareils et la connexion au système existant.</p>${link('/developpement-webdev/', 'Applications WebDev')} · ${link('/developpement-windev-mobile/', 'Applications mobiles')}</article><article><h3>Migration WinDev vers d’autres technologies</h3><p>Migrer votre application WinDev vers d’autres langages et technologies, par exemple C# ou JavaScript. Nous évaluons les fonctions à conserver, les dépendances WLangage et les données à reprendre pour définir une trajectoire progressive.</p>${link('/migration-applications-pcsoft/', 'Migration PC SOFT')} · ${link('/developpement-csharp/', 'Développement C#')} · ${link('/developpement-javascript/', 'Développement JavaScript')}</article></div>`;
 
@@ -24,17 +51,29 @@ export function createLocalPages(dataset) {
   const cities = selectCities(dataset.communes);
   const groups = new Map();
   for (const city of cities) {
-    if (!groups.has(city.departement.code)) groups.set(city.departement.code, {department:city.departement, cities:[]});
+    if (!groups.has(city.departement.code))
+      groups.set(city.departement.code, { department: city.departement, cities: [] });
     groups.get(city.departement.code).cities.push(city);
   }
-  const departments = [...groups.values()].sort((a,b) => a.department.code.localeCompare(b.department.code));
-  const pages = [{
-    path:'/zones-intervention/', title:'Expertise PC SOFT en France : villes et territoires | Serial Coders',
-    description:'Trouvez votre commune pour préparer un projet WinDev, WebDev, WinDev Mobile ou une migration vers d’autres technologies, notamment C# ou JavaScript avec Serial Coders.',
-    body:`<section class="detail-hero"><span class="eyebrow">FRANCE ET OUTRE-MER</span><h1>Votre projet PC SOFT,<br><em>où que vous soyez.</em></h1><p class="lead">Serial Coders accompagne les projets logiciels en France. Retrouvez votre commune pour préparer une création, une reprise d’application ou une migration vers d’autres technologies, notamment C# ou JavaScript.</p><p>Notre couverture nationale ne signifie pas que nous disposons d’une agence dans chaque ville. Le mode de collaboration et les éventuels déplacements sont définis lors du cadrage.</p>${action}</section><section class="section"><h2>Choisir un département ou un territoire</h2><p>${cities.length.toLocaleString('fr-FR')} communes et subdivisions territoriales de plus de 5 000 habitants figurent dans ce répertoire. Votre commune n’y apparaît pas ? Vous pouvez aussi nous contacter.</p><ul class="local-links">${departments.map(group => `<li>${link(departmentPath(group.department), `${group.department.code} — ${group.department.nom}`)} <span>(${group.cities.length})</span></li>`).join('')}</ul></section><section class="section"><h2>Quelle évolution pour votre application ?</h2>${serviceCards}</section><section class="section"><h2>Un périmètre transparent</h2><p>Les noms, codes et populations proviennent de l’<a href="https://geo.api.gouv.fr/decoupage-administratif/communes">API Découpage administratif</a>, extraite le ${escapeHtml(dataset.retrievedAt.slice(0,10))}. Le seuil est strictement supérieur à 5 000 habitants. Les millésimes de population ne sont pas fournis par cette réponse de l’API et peuvent varier selon les territoires. Ce répertoire décrit une couverture de services, pas des implantations.</p></section>`
-  }];
-  for (const {department, cities:members} of departments) {
-    pages.push({path:departmentPath(department), title:`WinDev : développement et migration : ${department.nom} (${department.code}) | Serial Coders`, description:`Projets PC SOFT dans le territoire ${department.nom} : retrouvez votre commune et préparez votre développement WinDev, WebDev ou votre migration vers une autre technologie.`, body:`<section class="detail-hero">${link('/zones-intervention/', '← Tous les territoires')}<span class="eyebrow">EXPERTISE PC SOFT · ${escapeHtml(department.code)}</span><h1>Votre projet logiciel :<br><em>${escapeHtml(department.nom)}.</em></h1><p class="lead">WinDev, WebDev, WinDev Mobile ou migration vers d’autres technologies : choisissez votre commune pour préparer votre demande.</p><p>Une couverture de services nationale ; les modalités d’intervention sont à définir avec vous.</p>${action}</section><section class="section"><h2>Les communes du territoire</h2>${cityLinks(members)}</section><section class="section"><h2>Développer, faire évoluer ou migrer</h2>${serviceCards}</section>`});
+  const departments = [...groups.values()].sort((a, b) =>
+    a.department.code.localeCompare(b.department.code),
+  );
+  const pages = [
+    {
+      path: '/zones-intervention/',
+      title: 'Expertise PC SOFT en France : villes et territoires | Serial Coders',
+      description:
+        'Trouvez votre commune pour préparer un projet WinDev, WebDev, WinDev Mobile ou une migration vers d’autres technologies, notamment C# ou JavaScript avec Serial Coders.',
+      body: `<section class="detail-hero"><span class="eyebrow">FRANCE ET OUTRE-MER</span><h1>Votre projet PC SOFT,<br><em>où que vous soyez.</em></h1><p class="lead">Serial Coders accompagne les projets logiciels en France. Retrouvez votre commune pour préparer une création, une reprise d’application ou une migration vers d’autres technologies, notamment C# ou JavaScript.</p><p>Notre couverture nationale ne signifie pas que nous disposons d’une agence dans chaque ville. Le mode de collaboration et les éventuels déplacements sont définis lors du cadrage.</p>${action}</section><section class="section"><h2>Choisir un département ou un territoire</h2><p>${cities.length.toLocaleString('fr-FR')} communes et subdivisions territoriales de plus de 5 000 habitants figurent dans ce répertoire. Votre commune n’y apparaît pas ? Vous pouvez aussi nous contacter.</p><ul class="local-links">${departments.map((group) => `<li>${link(departmentPath(group.department), `${group.department.code} — ${group.department.nom}`)} <span>(${group.cities.length})</span></li>`).join('')}</ul></section><section class="section"><h2>Quelle évolution pour votre application ?</h2>${serviceCards}</section><section class="section"><h2>Un périmètre transparent</h2><p>Les noms, codes et populations proviennent de l’<a href="https://geo.api.gouv.fr/decoupage-administratif/communes">API Découpage administratif</a>, extraite le ${escapeHtml(dataset.retrievedAt.slice(0, 10))}. Le seuil est strictement supérieur à 5 000 habitants. Les millésimes de population ne sont pas fournis par cette réponse de l’API et peuvent varier selon les territoires. Ce répertoire décrit une couverture de services, pas des implantations.</p></section>`,
+    },
+  ];
+  for (const { department, cities: members } of departments) {
+    pages.push({
+      path: departmentPath(department),
+      title: `WinDev : développement et migration : ${department.nom} (${department.code}) | Serial Coders`,
+      description: `Projets PC SOFT dans le territoire ${department.nom} : retrouvez votre commune et préparez votre développement WinDev, WebDev ou votre migration vers une autre technologie.`,
+      body: `<section class="detail-hero">${link('/zones-intervention/', '← Tous les territoires')}<span class="eyebrow">EXPERTISE PC SOFT · ${escapeHtml(department.code)}</span><h1>Votre projet logiciel :<br><em>${escapeHtml(department.nom)}.</em></h1><p class="lead">WinDev, WebDev, WinDev Mobile ou migration vers d’autres technologies : choisissez votre commune pour préparer votre demande.</p><p>Une couverture de services nationale ; les modalités d’intervention sont à définir avec vous.</p>${action}</section><section class="section"><h2>Les communes du territoire</h2>${cityLinks(members)}</section><section class="section"><h2>Développer, faire évoluer ou migrer</h2>${serviceCards}</section>`,
+    });
   }
   for (const city of cities) {
     const name = escapeHtml(city.nom);
@@ -43,14 +82,21 @@ export function createLocalPages(dataset) {
     const members = groups.get(city.departement.code).cities;
     const index = members.indexOf(city);
     // Alphabetical neighbours are explicit; do not imply unverified travel distances.
-    const related = members.slice(Math.max(0,index - 3), index).concat(members.slice(index + 1,index + 4));
-    pages.push({path:cityPath(city), title:`WinDev : développement et migration à ${city.nom} (${city.departement.code}) | Serial Coders`, description:`Entreprise à ${city.nom} (${city.departement.nom}) ? Serial Coders accompagne vos projets WinDev, WebDev, WinDev Mobile et vos migrations WinDev vers d’autres technologies, notamment C# et JavaScript.`, area:city,
-      body:`<section class="detail-hero"><nav class="local-breadcrumb" aria-label="Fil d’Ariane">${link('/zones-intervention/', 'France')} / ${link(departmentPath(city.departement), city.departement.nom)} / <span>${name}</span></nav><span class="eyebrow">PARTENAIRE GOLD PC SOFT</span><h1>WinDev à ${name}.<br><em>Spécialistes de la migration vers d’autres technologies.</em></h1><p class="lead">Votre entreprise est située à ${name} et recherche une société spécialisée dans les technologies PC SOFT ? Spécialistes de la migration d’applications WinDev vers d’autres langages et technologies, nous vous accompagnons notamment vers C# ou JavaScript. Nous développons et faisons aussi évoluer vos applications PC SOFT, en choisissant avec vous la technologie adaptée à vos usages.</p><p>Nous accompagnons les entreprises partout en France. Cette page ne désigne pas une agence à ${name} : les modalités de travail et les éventuels déplacements sont convenus selon votre projet.</p>${action}</section>
+    const related = members
+      .slice(Math.max(0, index - 3), index)
+      .concat(members.slice(index + 1, index + 4));
+    pages.push({
+      path: cityPath(city),
+      title: `WinDev : développement et migration à ${city.nom} (${city.departement.code}) | Serial Coders`,
+      description: `Entreprise à ${city.nom} (${city.departement.nom}) ? Serial Coders accompagne vos projets WinDev, WebDev, WinDev Mobile et vos migrations WinDev vers d’autres technologies, notamment C# et JavaScript.`,
+      area: city,
+      body: `<section class="detail-hero"><nav class="local-breadcrumb" aria-label="Fil d’Ariane">${link('/zones-intervention/', 'France')} / ${link(departmentPath(city.departement), city.departement.nom)} / <span>${name}</span></nav><span class="eyebrow">PARTENAIRE GOLD PC SOFT</span><h1>WinDev à ${name}.<br><em>Spécialistes de la migration vers d’autres technologies.</em></h1><p class="lead">Votre entreprise est située à ${name} et recherche une société spécialisée dans les technologies PC SOFT ? Spécialistes de la migration d’applications WinDev vers d’autres langages et technologies, nous vous accompagnons notamment vers C# ou JavaScript. Nous développons et faisons aussi évoluer vos applications PC SOFT, en choisissant avec vous la technologie adaptée à vos usages.</p><p>Nous accompagnons les entreprises partout en France. Cette page ne désigne pas une agence à ${name} : les modalités de travail et les éventuels déplacements sont convenus selon votre projet.</p>${action}</section>
       <section class="section"><span class="eyebrow">VOTRE APPLICATION</span><h2>Choisir le bon point de départ</h2>${serviceCards}</section>
       <section class="section company"><div><span class="eyebrow">MIGRATION WINDEV MULTITECHNOLOGIE</span><h2>Conserver votre métier.<br>Repenser sa mise en œuvre.</h2></div><div><p class="large">Votre application WinDev, vers la technologie adaptée à votre projet.</p><p>Avant une migration, nous étudions les traitements WLangage, les écrans, les éditions, les composants externes et les accès aux données, notamment HFSQL. Nous définissons ensuite la cible technique : par exemple C# pour les traitements et services métier, ou JavaScript pour une interface web. Ces technologies peuvent être combinées selon votre architecture. Le choix porte sur vos usages, vos intégrations et vos contraintes de maintenance, puis sur les étapes de bascule.</p><p>Préparez la version de WinDev utilisée, le nombre d’utilisateurs, les interfaces externes et les contraintes de disponibilité. Le périmètre, le calendrier et le budget se définissent après cette analyse ; aucune conversion automatique intégrale n’est promise.</p>${link('/migration-applications-pcsoft/', 'Comprendre notre démarche de migration')}</div></section>
       <section class="section detail-grid"><div><span class="eyebrow">PRÉPARER UN PROJET À ${name.toUpperCase()}</span><h2>Les informations utiles<br>au premier échange</h2><p>Commune ou subdivision : ${name} · code géographique ${escapeHtml(city.code)}.<br>Département ou territoire : ${department}.<br>Région ou territoire de rattachement : ${region}.<br>Codes postaux : ${city.codesPostaux.map(escapeHtml).join(', ')}.</p></div><ul class="needs"><li>Votre site à ${name}, les autres établissements concernés et les utilisateurs à associer aux ateliers.</li><li>Votre besoin : nouvelle application, reprise, maintenance évolutive ou migration vers d’autres technologies.</li><li>Les conditions d’accès à l’application et aux données : VPN, environnement de test, règles internes et confidentialité.</li><li>Vos disponibilités pour les ateliers, les contraintes horaires et le besoin éventuel d’intervention sur place.</li></ul></section>
       <section class="section"><h2>Avant de nous confier votre projet</h2><div class="offer-grid"><article><h3>Faut-il migrer toute l’application ?</h3><p>Pas nécessairement. Le maintien de l’existant, la modernisation de certains modules et la migration progressive sont des options à comparer selon vos contraintes.</p></article><article><h3>Comment collaborer depuis ${name} ?</h3><p>Indiquez votre organisation et vos contraintes d’accès. Nous définirons avec vous les ateliers, les échanges à distance et la nécessité éventuelle d’un déplacement. Aucun délai d’intervention local n’est garanti par cette page.</p></article><article><h3>Comment obtenir une estimation ?</h3><p>Décrivez les objectifs et les difficultés actuelles, puis joignez si utile un cahier des charges sans données confidentielles. Un chiffrage dépend du périmètre et de l’analyse technique.</p></article></div></section>
-      <section class="section"><h2>Autres communes du même territoire</h2><p>Sélection alphabétique dans le territoire ${department}.</p>${cityLinks(related)}${link(departmentPath(city.departement), `Toutes les communes : ${city.departement.nom}`)}</section><section class="contact-band"><h2>Un projet WinDev<br>à ${name} ?</h2>${action}</section>`});
+      <section class="section"><h2>Autres communes du même territoire</h2><p>Sélection alphabétique dans le territoire ${department}.</p>${cityLinks(related)}${link(departmentPath(city.departement), `Toutes les communes : ${city.departement.nom}`)}</section><section class="contact-band"><h2>Un projet WinDev<br>à ${name} ?</h2>${action}</section>`,
+    });
   }
   return pages;
 }

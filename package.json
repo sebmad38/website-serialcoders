@@ -1,1 +1,29 @@
-{"name":"serial-coders-site","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","test":"node --test","start":"node scripts/serve.mjs"},"engines":{"node":">=22"}}
+{
+  "name": "serial-coders-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "start": "node scripts/serve.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write src server scripts tests *.mjs *.json .github",
+    "format:check": "prettier --check src server scripts tests *.mjs *.json .github",
+    "check": "npm run lint && npm run format:check && npm test",
+    "test:browser": "playwright test",
+    "prestart": "npm run build",
+    "pretest:browser": "npm run build",
+    "package": "python scripts/package-release.py"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "eslint": "10.10.0",
+    "globals": "17.12.0",
+    "postcss": "8.5.28",
+    "prettier": "3.9.7"
+  }
+}

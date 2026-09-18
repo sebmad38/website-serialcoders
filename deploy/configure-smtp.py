@@ -11,10 +11,10 @@ import subprocess
 def configure_smtp():
     if os.geteuid() != 0:
         raise SystemExit("Run with sudo.")
-    host = input("SMTP hostname [in-v3.mailjet.com]: ").strip() or "in-v3.mailjet.com"
+    host = input("SMTP hostname [smtp.zeptomail.eu]: ").strip() or "smtp.zeptomail.eu"
     port = input("SMTP port [587]: ").strip() or "587"
-    username = getpass.getpass("Mailjet API key (hidden): ").strip()
-    sender = input("Authorized sender [contact@serialcoders.fr]: ").strip() or "contact@serialcoders.fr"
+    username = input("SMTP username [emailapikey]: ").strip() or "emailapikey"
+    sender = input("Authorized sender [noreply@serialcoders.fr]: ").strip() or "noreply@serialcoders.fr"
     recipient = input("Recipient [contact@serialcoders.fr]: ").strip() or "contact@serialcoders.fr"
     if not re.fullmatch(r"[a-zA-Z0-9.-]+", host) or port not in {"587", "465"}:
         raise SystemExit("Invalid SMTP host or port.")
@@ -23,7 +23,7 @@ def configure_smtp():
         raise SystemExit("Invalid email address.")
     if not username or re.search(r"[\s:\x00]", username):
         raise SystemExit("Invalid SMTP username.")
-    password = getpass.getpass("Mailjet secret key (hidden): ")
+    password = getpass.getpass("SMTP password / send mail token (hidden): ")
     if not password or any(character in password for character in "\r\n\x00"):
         raise SystemExit("Invalid password.")
 

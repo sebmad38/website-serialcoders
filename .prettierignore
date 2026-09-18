@@ -1,0 +1,11 @@
+dist/
+node_modules/
+.npm-cache/
+.serialcoders-build-*/
+data/
+public/
+test-results/
+playwright-report/
+.audit-baseline.json
+.audit-*
+.refactor.py

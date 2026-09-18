@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-root = Path("/var/www/serialcoders/current")
+root = Path("/var/www/serialcoders/current/site")
 checked = 0
 for file in root.rglob("*"):
     if not file.is_file():

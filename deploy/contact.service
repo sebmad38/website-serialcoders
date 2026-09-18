@@ -4,9 +4,9 @@ After=network.target
 
 [Service]
 User=www-data
-WorkingDirectory=/opt/serialcoders
+WorkingDirectory=/var/www/serialcoders/current
 EnvironmentFile=/etc/serialcoders-contact.env
-ExecStart=/usr/local/bin/node /opt/serialcoders/scripts/contact-api.mjs
+ExecStart=/usr/local/bin/node /var/www/serialcoders/current/server/index.mjs
 Restart=on-failure
 # Postfix sendmail needs the setgid postdrop helper to queue messages.
 NoNewPrivileges=false

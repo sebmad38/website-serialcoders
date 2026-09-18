@@ -2,32 +2,49 @@
 
 Site statique français destiné à générer des demandes de développement sur mesure et de migration. Double expertise : WinDev, WebDev et WinDev Mobile d’une part, C# et JavaScript d’autre part. Cible : tous secteurs, France entière et projets internationaux. Le partenariat Gold PC SOFT est confirmé par l’utilisateur. Le formulaire utilise une petite API Node.js sans dépendance npm, avec un relais mail local. Les pages sont rendues en HTML pour rester accessibles aux moteurs et fonctionner sans JavaScript.
 
-## Couverture locale PC SOFT
+## Référencement
 
-Voir [SEO-LOCAL.md](SEO-LOCAL.md) pour les 2 280 pages locales, les 107 pages de territoires, la provenance des populations et les limites de cette stratégie SEO. Le total est désormais de 2 402 pages, et non neuf : le contrôle de déploiement suit toutes les routes du sitemap. La version générée est désormais indexable (production: true), en attente de déploiement.
+Les 2 388 pages géographiques automatiques ont été retirées à la demande de l’utilisateur. Le site conserve 14 pages principales, leurs métadonnées, leurs URL canoniques et leur présence dans le sitemap. Voir [SEO-LOCAL.md](SEO-LOCAL.md) pour les consignes de retrait au déploiement.
 
 ## Prestations et questions avant devis
 
-Les six besoins sont accessibles depuis « Votre projet » sur l’accueil : audit WinDev, reprise et maintenance, migration vers d’autres technologies, migration HFSQL vers PostgreSQL, modernisation du logiciel métier et intégration API. Cinq pages sont ajoutées par `scripts/buyer-services.mjs` ; la page de migration existante est enrichie pour conserver son URL. Le total est de 2 402 pages. Le bloc `/#questions-devis` répond aux cinq questions de préparation d’un devis et renvoie vers ces prestations. Les contenus ne fixent aucun tarif ni engagement de service non validé.
+Les six besoins sont accessibles depuis « Votre projet » sur l’accueil : audit WinDev, reprise et maintenance, migration vers d’autres technologies, migration HFSQL vers PostgreSQL, modernisation du logiciel métier et intégration API. Cinq pages sont ajoutées par `src/pages/buyer-services.mjs` ; la page de migration existante est enrichie pour conserver son URL. Le total est de 14 pages. Le bloc `/#questions-devis` répond aux cinq questions de préparation d’un devis et renvoie vers ces prestations. Les contenus ne fixent aucun tarif ni engagement de service non validé.
 
 ## Développement
 
 Le thème est sélectionné par `design` dans `site.config.json` : `editorial` active la proposition claire, noir et or (`dist/proposal-b.css`), `modern` restaure la proposition sombre/dorée (`dist/modern.css`). Relancer `npm run build` après le choix. Les deux versions sont conservées ; un seul thème est chargé par page. La proposition claire utilise aussi Georgia en italique pour l’accent des grands titres. Space Grotesk et Manrope sont servies localement en WOFF2 variable (`dist/fonts/`). Les licences OFL sont incluses ; aucune requête vers Google Fonts n’est émise par le site. Les effets de survol respectent la préférence de réduction des animations.
 
-Node.js 22 ou supérieur. `npm run build` génère les pages commerciales et locales depuis `scripts/build.mjs` et `scripts/editorial.mjs`. Le second fichier contient le positionnement commercial, la migration et les contenus C#/JavaScript. Les fichiers CSS, JavaScript et images de `dist/` sont des sources suivies dans Git : ne pas supprimer `dist` pour nettoyer une compilation. `npm test` vérifie les liens, les métadonnées et le comportement du consentement. `npm start` sert le site sur http://127.0.0.1:4173.
+Node.js 22.13 ou supérieur (Node 24 conseillé pour reproduire la CI), Python 3.10+ pour les outils de livraison.
+
+```sh
+npm ci
+npm run check
+npm run test:browser
+npm start
+```
+
+`npm start` reconstruit le site puis le sert sur http://127.0.0.1:4173. Sous Windows, les tests navigateur utilisent Edge installé. Sous Linux, installer Chromium de test avec `npx playwright install --with-deps chromium` ; `PLAYWRIGHT_CHANNEL` permet de choisir un autre canal installé.
+
+- `npm run build` crée une sortie complète et remplace `dist/` après génération réussie.
+- `npm test` construit une sortie temporaire et y vérifie l'API, les métadonnées, les liens, les ressources et le consentement.
+- `npm run lint`, `npm run format` et `npm run format:check` contrôlent la qualité et la présentation du code.
+- `npm run test:browser` vérifie menu mobile, consentement, sélection de documents, succès et échec d'envoi simulés.
+- `python -m unittest discover -s tests/deploy -v` teste les protections de l'archive et le retour arrière.
+
+`dist/` est désormais entièrement généré, jetable et ignoré par Git. Ne jamais y éditer les sources. Les contenus sont dans `src/content/`, les pages dans `src/pages/`, les modèles communs dans `src/templates/`, le JavaScript navigateur dans `src/client/`, les CSS dans `src/styles/`, les images/polices dans `public/` et l'API dans `server/`. Les ressources de conception abandonnées restent dans `archive/design/`. Les outils de développement sont verrouillés dans `package-lock.json` ; aucune dépendance npm n'est requise pour servir les pages ou exécuter l'API.
 
 ## Déploiement Lightsail
 
-Le choix explicite de l’utilisateur est Lightsail ; aucune publication Sites n’est nécessaire. Une réservation privée Sites a été créée avant cette précision, sans version publiée ni bascule de domaine.
+Voir [deploy/README.md](deploy/README.md) pour le conditionnement, la migration initiale et les livraisons suivantes. La nouvelle archive réunit `site/` et `server/`. Elle exige une adaptation initiale de la racine Nginx et de l'unité systemd ; elle ne doit pas être installée avec l'ancienne procédure de copie du seul fichier API.
 
-1. Préparer une instance et une IP statique Lightsail. Le modèle `deploy/nginx.conf` vise Ubuntu avec Nginx ; il ne doit pas être copié tel quel sur une image Bitnami/Apache.
-2. Transférer uniquement le contenu de `dist/` dans un dossier de version sous `/var/www/serialcoders/releases/`. Ne pas exposer le dépôt ni les configurations de travail.
-3. Faire pointer `/var/www/serialcoders/current` vers cette version et adapter le virtual host. Vérifier `nginx -t` avant de recharger Nginx.
-4. Tester via une préproduction protégée ; conserver `production: false`. Ne pas basculer le domaine tant que les mentions légales et la configuration ne sont pas complètes.
-5. Configurer un certificat TLS couvrant le domaine et son alias www, une redirection HTTP vers HTTPS et www vers le domaine canonique. Vérifier le renouvellement. Le modèle fourni n’inclut volontairement aucun faux chemin de certificat.
-6. Pour la version publique prête : passer `production` à `true` dans `site.config.json`, relancer `npm run build` puis `npm test`, et transférer cette version. Les contrôles suivent automatiquement le mode configuré. Un test séparé vérifie aussi la génération indexable dans un répertoire temporaire sans modifier la préproduction.
-7. Basculer les DNS web vers l’IP statique en conservant les MX/TXT de messagerie. Garder l’ancien serveur pour le retour arrière. Conserver les anciennes ancres ; traiter toute autre URL trouvée dans les journaux/Search Console par une redirection pertinente.
-8. Exécuter `node scripts/check-deployment.mjs https://serialcoders.fr` : le contrôle compare toutes les pages du sitemap et leurs ressources avec la version locale exacte, contrôle les réponses HTTP, la page absente et un éventuel en-tête de blocage d’indexation. Toute différence est un échec, pas un déploiement présumé réussi. Vérifier séparément les redirections HTTP/www, le rendu et la réception GA4 réelle. Soumettre le sitemap dans Search Console après validation DNS.
+```sh
+npm run build
+python scripts/package-release.py
+```
+
+L'archive est produite dans `artifacts/serialcoders-release.tar.gz`. Le contrôle public `node scripts/check-deployment.mjs https://serialcoders.fr` compare la totalité des fichiers avec la livraison locale, y compris `contact.js`, puis vérifie la page 404. La réception email, les redirections HTTPS/www et le rendu final sur le domaine sont à vérifier séparément.
+
+La refonte du code ne déploie rien sur Lightsail et ne modifie pas les DNS, les certificats ou les comptes Google. La version publique reste à contrôler indépendamment ; les états historiques se trouvent dans `deploy/STATUS.md`.
 
 ## Google
 
@@ -45,7 +62,7 @@ Voir `GOOGLE-SETUP.md` pour les actions qui nécessitent le propriétaire du com
 - Le partenariat Gold et les compétences C#/JavaScript sont confirmés par l’utilisateur. Aucune référence client, réalisation chiffrée ou économie garantie n’est inventée.
 - La mesure GA4 est préparée mais non activée ; Search Console et la fiche d’entreprise ne sont pas créées.
 - Les mentions légales complètes nécessitent la raison sociale, les coordonnées du siège, l’immatriculation, le responsable de publication et les informations d’hébergement validées. La page de confidentialité actuelle décrit le fonctionnement technique et doit être complétée avant lancement selon les traitements réels.
-- Le serveur, son système, les accès de déploiement et le compte Google ne sont pas encore disponibles dans cette tâche.
+- L’état historique du serveur est décrit dans `deploy/STATUS.md` ; sa configuration actuelle et les comptes Google ne sont pas vérifiés par les tests locaux.
 - L’indexation de la version générée est activée ; le site public doit encore recevoir cette version pour bénéficier du changement.
 
 ## Provenance
@@ -56,7 +73,7 @@ Audit : `AUDIT-REFONTE.md`, 16 septembre 2026. Logo : https://serialcoders.fr/wp
 
 Le formulaire /contact/ appelle POST /api/contact. Validation côté navigateur et serveur, taille limitée, champ piège et limite de cinq tentatives par IP sur dix minutes. Aucun message ni coordonnée n’est journalisé par l’API. La confirmation indique une acceptation par le relais local, pas une livraison garantie dans la boîte destinataire. Sans relais configuré, l’API retourne une indisponibilité et le navigateur conserve le texte.
 
-Pour Lightsail : installer Node.js 22+, copier scripts/contact-api.mjs sous /opt/serialcoders/scripts (hors racine web), installer un relais local compatible sendmail (par exemple Postfix) et le configurer avec votre fournisseur SMTP authentifié. Les identifiants restent dans la configuration privée du relais. Éviter un envoi direct SMTP sans relais ; vérifier SPF/DKIM et la délivrabilité avec le fournisseur.
+Pour Lightsail : installer Node.js 22+, livrer le dossier `server/` avec les pages, suivant `deploy/README.md` (hors racine web `site/`), installer un relais local compatible sendmail (par exemple Postfix) et le configurer avec votre fournisseur SMTP authentifié. Les identifiants restent dans la configuration privée du relais. Éviter un envoi direct SMTP sans relais ; vérifier SPF/DKIM et la délivrabilité avec le fournisseur.
 
 Créer /etc/serialcoders-contact.env (root, permissions 600) avec CONTACT_ORIGIN=https://serialcoders.fr, CONTACT_FROM et CONTACT_TO correspondant aux adresses validées, et CONTACT_SENDMAIL=/usr/sbin/sendmail. Adapter et installer deploy/contact.service, puis activer le service. Le modèle Nginx contient le proxy vers le port 4180, lié uniquement à 127.0.0.1. Ne pas exposer ce port. Le compte www-data doit être autorisé à soumettre au relais local. Vérifier les chemins Node et sendmail sur l’instance.
 
@@ -65,3 +82,9 @@ Avant publication : tester une demande réelle jusqu’à sa réception, la rép
 ### Documents joints
 
 Le formulaire accepte cinq fichiers maximum et 10 Mio cumulés (PDF, DOCX, XLSX, PPTX, TXT UTF-8, PNG, JPEG). Le navigateur encode les fichiers en base64 ; Nginx et l’API limitent le corps JSON à 15 Mio. Le serveur vérifie noms, extensions, encodage, tailles et signatures élémentaires, puis produit un email MIME avec pièces jointes. Aucun fichier n’est écrit dans la racine web. Les signatures ne remplacent pas un antivirus : configurer l’analyse des pièces jointes sur le relais ou la messagerie destinataire. Le relais doit accepter au moins 15 Mio par message. Tester la réception des pièces jointes avec le fournisseur avant publication.
+
+## Corrections ciblées après contrôle
+
+Le menu est vérifié dans les deux thèmes. Les limites du formulaire sont définies dans `server/contact/policy.mjs`, reprises dans le HTML et intégrées au script navigateur généré. L'API émet les emails MIME par blocs avec régulation du débit ; la validation UTF-8 évite les copies intégrales inutiles.
+
+Le paquet contient un manifeste global couvrant aussi l'API et un contrôle de démarrage sans email avant activation. La règle Nginx de cache CSS/JS doit être reportée sur le serveur réel ; voir `deploy/README.md`. Aucune de ces corrections locales ne constitue un déploiement.
